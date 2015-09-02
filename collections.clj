@@ -155,10 +155,8 @@
 ;;Lazy seq will evaluate
 (first rands)
 ;; keeps evaluating
-(nth rands)
+;;(nth 3 rands)
 ;;will keep the previous values and will continue from where it last evaluated
 (count rands)
 
-
-
-
+(repeatedly 10 (partial rand-int 50))
