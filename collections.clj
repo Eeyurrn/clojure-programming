@@ -160,3 +160,13 @@
 (count rands)
 
 (repeatedly 10 (partial rand-int 50))
+
+(def x (next (random-ints 50)))
+(def x (rest (random-ints 50)))
+
+(let [[x & rest](random-ints 50)])
+
+(dorun (take 5 (random-ints 50)))
+
+(apply str (remove (set "aeiouy")
+                   "vowels are useless! or maybe not..."))
