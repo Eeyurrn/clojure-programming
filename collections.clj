@@ -170,3 +170,53 @@
 
 (apply str (remove (set "aeiouy")
                    "vowels are useless! or maybe not..."))
+
+
+(split-with neg? (range -5 5))
+
+
+#_(let [[t d] (split-with #(< % 12)(range 1e8))]
+ [(count d) (count t)] )
+
+;;Associative abstraction
+
+(def m {:a 1 :b 2 :c 3})
+
+(get m :b)
+
+(get m :d "not found")
+
+(assoc m :d 4)
+
+(dissoc m :b)
+
+(assoc m
+  :x 4
+  :y 5
+  :z 6)
+
+(dissoc m :a :c)
+
+;;use associative abstraction with vectors
+
+(def v [1 2 3])
+
+(get v 1)
+
+(get v 10)
+
+(get v 10 "not-found")
+
+(assoc v
+  1 4
+  0 -12
+  2 :p)
+
+(assoc v 3 10)
+;;Sets
+
+(get #{1 2 3} 2)
+
+(get #{1 2 3} 4)
+
+(get #{1 2 3} 4 "not-found")
