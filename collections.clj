@@ -254,3 +254,113 @@
 (if-let [[k v](find {:a 5 :b 6} :a)]
   (format "found %s => %s" k v )
   "not found")
+
+;;Indexed abstraction
+
+ (nth [:a :b :c] 2)
+
+ (get [:a :b :c] 2)
+
+ (nth [:a :b :c] 3);;ArrayIndexOutOfBoundsException will occur, of course it does.
+
+ (get [:a :b :c] 3);;gets a nil instead of exploding
+
+ (nth [:a :b :c] -1);;ArrayIndexOutOfBoundsException again
+
+ (get [:a :b :c]-1) ;; produces nil
+
+ ;;behaviour is the same when provided a default value
+
+ (nth [:a :b :c] -1 "not found")
+
+ (get [:a :b :c] -1 "not found")
+
+ ;;Stack Abstraction
+
+ (conj '() 1)
+
+ (conj '(2 1) 3)
+ ;;gets the top value
+ (peek '(3 2 1))
+ ;;gets a collection with the top value removed
+ (pop '(3 2 1))
+
+
+ ;;now for vectors
+
+ (conj [] 1)
+
+ (conj [1 2 ]3)
+
+ (peek [1 2 3])
+
+ (pop [1 2 3])
+
+ (pop [1])
+
+
+ ;;Set Abstraction
+
+ (get #{1 2 3} 2)
+
+ (get #{1 2 3} 4)
+ ;;Works with values
+ (get #{1 2 3} 4 "not-found")
+
+ ;;removing values from sets
+ (disj #{1 2 3} 3 1)
+
+ ;;Sorted Abstraction
+ (def sm (sorted-map :z 5 :x 9 :y 0 :b 2 :a 3 :c 4))
+ ;;sorted by key
+ sm
+
+ (rseq sm)
+ ;;first use of subseq using 3 args
+ (subseq sm <= :c)
+ ;;second use of subseq using 5 args
+ (subseq sm > :b <= :y)
+
+ ;;Compare
+ (compare 2 2)
+
+ (compare "ab" "abc")
+
+ (compare ["a" "b" "c"] ["a" "b"])
+
+ (compare ["a" 2]["a" 2 0])
+
+ (sort < (repeatedly 10 #(rand-int 100)))
+
+ (sort-by first > (map-indexed vector "Clojure"))
+
+ (sorted-map-by compare :z 5 :x 9 :y 0 :b 2 :a 3)
+ ;;composing the - negative and compare inverts the integer
+ (sorted-map-by (comp - compare) :z 5 :x 9 :y 0 :b 2 :a 3)
+
+ (defn magnitude
+   [x]
+   (-> x Math/log10 Math/floor))
+
+ (magnitude 100)
+
+ (defn compare-magnitude
+   [a b]
+   (neg? (- (magnitude a) (magnitude b))))
+
+((comparator compare-magnitude) 10 10000)
+
+((comparator compare-magnitude) 100 10)
+;;same order of magnitude
+((comparator compare-magnitude) 10 75)
+
+(def mag-set(sorted-set-by compare-magnitude 10 1000 500))
+;;does not add to the set because set already has something with the same magnitude.
+(conj mag-set 600)
+;;removes the member with the same magnitude due to the set's comparative nature
+(disj mag-set 750)
+;;contains predicate works based on the set's comparator
+(contains? mag-set 1239)
+
+
+
