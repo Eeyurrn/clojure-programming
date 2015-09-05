@@ -220,3 +220,37 @@
 (get #{1 2 3} 4)
 
 (get #{1 2 3} 4 "not-found")
+
+
+;; contains predicate
+
+(contains? [1 2 3] 0);;true when KEY is present, not value
+
+(contains? {:a 5 :b 6} :b)
+
+(contains? {:a 5 :b 6} 42)
+
+(contains? #{1 2 3} 1)
+
+;;also works for strings
+
+(get "Clojure" 3)
+;;Java hashmap
+(contains? (java.util.HashMap.) "not-there")
+
+(get (into-array [1 2 3]) 0)
+
+;;Watch out for nil values
+
+(get {:ethel nil} :lucy)
+;;Find gives the key and the value
+(find {:ethel nil} :ethel)
+
+(if-let [e (find {:a 5 :b 6} :a)]
+  (format "found %s => %s" (key e)(val e))
+  "not found")
+
+;;the de-structured version
+(if-let [[k v](find {:a 5 :b 6} :a)]
+  (format "found %s => %s" k v )
+  "not found")
