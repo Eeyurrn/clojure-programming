@@ -362,5 +362,22 @@
 ;;contains predicate works based on the set's comparator
 (contains? mag-set 1239)
 
+;;New compare magnitude
+(defn compare-magnitude
+   [a b]
+   (let[diff (- (magnitude a) (magnitude b))]
+     (if(zero? diff)
+     (compare a b)
+     diff)))
+
+(def ss (sorted-set-by compare-magnitude 10 500 1000 670 1239))
+
+(subseq ss > 500)
+
+(subseq ss > 500 <= 1000)
+
+(rsubseq ss > 500 <= 1000)
+
+
 
 
