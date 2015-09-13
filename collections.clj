@@ -424,3 +424,20 @@
 
 (:d #{:a :b :c})
 
+;;Using keywords as higher order functions.
+
+(map :name [{:age 21 :name "David"}
+            {:gender :f :name "Suzanne"}
+            {:name "Sara" :location "NYC"}])
+
+(some #{1 3 7} [0 2 4 5 6])
+
+(some #{1 3 7} [0 2 3 4 5 6])
+
+(filter :age [{:age 21 :name "David"}
+              {:gender :f :name "Suzanne" :age 20}
+              {:name "Sara" :location "NYC" :age 34}])
+;;calling :age as function then calling a partial on the <= 25
+(filter (comp (partial <= 25) :age) [{:age 21 :name "David"}
+              {:gender :f :name "Suzanne" :age 20}
+              {:name "Sara" :location "NYC" :age 34}])
