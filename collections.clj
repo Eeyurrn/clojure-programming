@@ -379,5 +379,18 @@
 (rsubseq ss > 500 <= 1000)
 
 
+;;implement linear interpolation function
 
+(defn interpolate
+  "Takes a collection of points (as [x y] tuples), returning a
+  function which is a linear interpolation between those points"
+  [points]
+  (let [results (into (sorted-map) (map vec points))]
+    (fn [x];;returning a function
+      (let [[xa ya](first (rsubseq results <= x))
+            [xb yb](first (subseq results > x))]
+        (if (and xa xb);;case with xa xb are not nil
+          (/(+(* ya (- xb x))(* yb (- x xa)))
+            (- xb xa))
+          (or ya yb))))))
 
