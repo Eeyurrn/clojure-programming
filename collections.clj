@@ -394,3 +394,33 @@
             (- xb xa))
           (or ya yb))))))
 
+(def f (interpolate [[0 0][10 10][15 5]]))
+
+(map f [ 2 10 12])
+
+;;Collection access
+
+(get [:a :b :c] 2)
+
+(get {:a 5 :b 6} :b)
+
+(get {:a 5 :b 6 } :c 7)
+
+(get #{1 2 3} 3)
+
+;;No get call
+([:a :b :c] 2)
+
+({:a 5 :b 6} :b)
+
+({:a 5 :b 6 } :c 7)
+
+(#{1 2 3} 3)
+
+;;using key words as functions typically better as it avoids NullPointerExceptions
+(:b {:a 5 :b 6} )
+
+(:c {:a 5 :b 6 } 7)
+
+(:d #{:a :b :c})
+
