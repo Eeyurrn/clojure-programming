@@ -441,3 +441,36 @@
 (filter (comp (partial <= 25) :age) [{:age 21 :name "David"}
               {:gender :f :name "Suzanne" :age 20}
               {:name "Sara" :location "NYC" :age 34}])
+
+(defn euclidian-division
+  [x y]
+  [(quot x y)(rem x y)])
+
+(euclidian-division 42 8)
+;; equivalent
+((juxt quot rem) 42 8)
+
+
+;;Maps as Ad-hoc structs
+
+(def playlist
+  [{:title "Elephant", :artist "The White Stripes", :year 2003}
+   {:title "Helioself", :artist "Papas Fritas", :year 1997}
+   {:title "Stories from the City, Stories from the Sea", :artist "PJ Harvey", :year 2000}
+   {:title "Buildings and Grounds", :artist "Papas Fritas", :year 2000}
+   {:title "Zen Rodeo", :artist "Mardi Gras BB", :year 2002}])
+
+
+(map :title playlist)
+
+(defn summarize [{:keys [title artist year]}]
+  (str title " / " artist " / " year))
+
+(map summarize playlist)
+
+;;Other usages of maps
+(group-by #(rem % 3) (range 10))
+
+(group-by :artist playlist)
+;;Group by 2 keys
+(group-by (juxt :artist :year) playlist)
