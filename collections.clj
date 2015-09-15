@@ -474,3 +474,44 @@
 (group-by :artist playlist)
 ;;Group by 2 keys
 (group-by (juxt :artist :year) playlist)
+
+
+
+(defn reduce-by
+  [key-fn f init coll]
+  (reduce (fn [summaries x]
+            (let [k (key-fn x)];;set k as the key for the map that we will return
+              (assoc summaries k (f (summaries k init) x))));; add to summaries map under key k using the f function on what is pulled out from summaries with the same k key
+          {};;we return a map
+          coll))
+
+
+(def orders
+  [{:product "Clock" :customer "Wile Coyote" :qty 6 :total 300}
+   {:product "Dynamite" :customer "Wile Coyote" :qty 20 :total 5000}
+   {:product "Shotgun" :customer "Elmer Fudd" :qty 2 :total 800}
+   {:product "Shells" :customer "Elmer Fudd" :qty 4 :total 100}
+   {:product "Hole" :customer "Wile Coyote" :qty 1 :total 1000}
+   {:product "Anvil" :customer "Elmer Fudd" :qty 2 :total 300}
+   {:product "Anvil" :customer "Wile Coyote" :qty 6 :total 900}])
+
+
+(reduce-by :customer #(+ %1 (:total %2)) 0 orders)
+
+;;break it up by customer and order.
+
+
+(reduce-by (juxt :customer :product) #(+ %1 (:total %2)) 0 orders)
+;;Trivial silly example of assoc in function assigns value to keys, for each key, creates a map with the key int the sequence fed to it
+(assoc-in {} [:eek :ook] "ekk")
+
+;;Enhanced deep map version
+(defn reduce-by
+  [key-fn f init coll]
+  (reduce (fn [summaries x]
+            (let [ks (key-fn x)];;set k as the key for the map that we will return
+              (assoc-in summaries ks (f (get-in summaries ks init) x))));; add to summaries map under keys k using the f function on what is pulled out from summaries with the same k key
+          {};;we return a map
+          coll))
+(reduce-by (juxt :customer :product) #(+ %1 (:total %2)) 0 orders)
+
