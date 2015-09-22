@@ -515,3 +515,11 @@
           coll))
 (reduce-by (juxt :customer :product) #(+ %1 (:total %2)) 0 orders)
 
+;;update-in example
+(def version1 {:name "Chas" :info {:age 31}})
+
+(def version2 (update-in version1[:info :age] + 3))
+
+version1
+version2
+
