@@ -523,3 +523,33 @@
 version1
 version2
 
+
+;;Transients uh-oh
+
+(def x (transient []))
+
+(def y (conj! x 1))
+
+(count x)
+
+(count y);;if these were regular clojure vectors, x's size would be 0 and not 1
+
+
+(into  #{} (range 5))
+;;Performance comparison
+
+(defn naive-into
+  [coll source]
+  (reduce conj coll source))
+
+;;Assert the same behaviours
+
+(= (into #{} (range 500))
+   (naive-into #{} (range 500)))
+;;clojure into function uses transient under the covers
+(time (do (into #{} (range 1e6))
+      nil))
+
+(time (do (naive-into #{} (range 1e6))
+      nil))
+
