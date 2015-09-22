@@ -553,3 +553,27 @@ version2
 (time (do (naive-into #{} (range 1e6))
       nil))
 
+(defn faster-into
+  [coll source]
+  (persistent! (reduce conj! (transient coll) source)))
+
+(time (do (faster-into #{} (range 1e6 ))
+        nil))
+
+
+;;Meta data
+(def a ^{:created (System/currentTimeMillis)}
+  [1 2 3])
+
+(meta a)
+
+(meta ^:private [1 2 3])
+
+(meta ^:private ^:dynamic [1 2 3])
+(def b (with-meta a (assoc (meta a)
+                      :modified (System/currentTimeMillis))));;with-meta replaces it entirely
+
+(meta b)
+(def b (vary-meta a assoc :modified (System/currentTimeMillis)));;vary-meta is used to update metadata
+
+(meta b)
