@@ -13,7 +13,7 @@
 
 (def glider (populate (empty-board 6 6) #{[2 0] [2 1] [2 2] [1 2] [0 1]}))
 
-(pprint glider)
+
 
 (defn neighbours ;;gets the neighbour cell for a set of coordinates
   [[x y]]
@@ -41,6 +41,59 @@
              2 (get-in board [x y])
              3 :on
              nil)]
-       (recur (assoc-in new-board [x y] new-liveness x (inc y))))))))
+       (recur (assoc-in new-board [x y] new-liveness) x (inc y)))))))
+
+;;replace manual iteration
+
+(defn indexed-step2
+  [board]
+  (let [w (count board)
+        h (count (first board))]
+    (reduce;;replace loop construct with reduce calls
+     (fn [new-board x]
+       (reduce
+         (fn [new-board y]
+          (let [new-liveness ;; associate the new liveness tp new-liveness var using the case,
+                ;;2 nothing happens, 3 there is growth, anything else, DEATH!
+                (case (count-neighbours board [x y])
+                  2 (get-in board [x y])
+                  3 :on
+                  nil)]
+            (assoc-in new-board [x y] new-liveness)))
+       new-board (range h)))
+     board (range w))))
+
+;;Collapsed reductions
+
+(defn indexed-step3
+  [board]
+  (let [w (count board);;Grab the width and height
+        h (count (first board))]
+    (reduce
+     (fn [new-board [x y]];;Collapse the 2 reduce calls by using the for function to generate the coordinate pairs
+       (let [new-liveness
+             (case (count-neighbours board [x y])
+               2 (get-in board [x y])
+               3 :on
+               nil)]
+        (assoc-in new-board [x y] new-liveness)))
+     board (for [x (range h) y (range w)] [x y]);;generates the seq of [x y] to be processed by the board
+     )))
 
 (-> (iterate indexed-step glider) (nth 8) pprint)
+
+(partition 3 1 (range 5))
+
+(partition 3 1 (concat [nil] (range 5) [nil]))
+
+(defn window
+  "Return a lazy sequence of 3-item windows centered around each item of coll"
+  [coll]
+  (partition 3 1 (concat [nil] coll [nil])))
+
+(defn cell-block
+  "Creates a sequence of 3x3 windows from a triple of sequences."
+  [[left mid right]]
+  (window (map vector
+               (or left (repeat nil)) mid (or right (repeat nil)))))
+
