@@ -65,7 +65,7 @@
 
 ;;Collapsed reductions
 
-(defn indexed-step3
+(defn indexed-step
   [board]
   (let [w (count board);;Grab the width and height
         h (count (first board))]
@@ -97,3 +97,52 @@
   (window (map vector
                (or left (repeat nil)) mid (or right (repeat nil)))))
 
+
+(defn window
+  "Returns a lazy sequence of 3-item windows centered around
+  each item of coll, padded as necessary with pad or nil"
+  ([coll] (window nil coll))
+   ([pad coll]
+   (partition 3 1 (concat [pad] coll [pad]))))
+
+(defn cell-block
+  "Creates a sequence of 3x3 windows from a triple of sequences."
+  [[left mid right]]
+  (window (map vector left mid right)))
+
+(defn liveness
+  "Returns the liveness (nil or :on) of the center cell for the next step."
+  [block]
+  (let [[_ [_ center _] _] block]
+    (case (- (count (filter #{:on} (apply concat block)))
+            (if (= :on center) 1 0))
+    2 center
+    3 :on
+    nil)))
+
+(defn- step-row
+  "Yields the next state of the center row."
+  [rows-triple]
+  (vec(map liveness (cell-block rows-triple))))
+
+(defn index-free-step
+  "Yields the next state of the board"
+  [board]
+  (vec (map step-row(window(repeat nil) board))))
+
+(= (nth (iterate indexed-step glider) 8)
+   (nth (iterate index-free-step glider) 8))
+
+
+(defn step
+  "Yields the next state of the world"
+  [cells]
+  (set (for [[loc n] (frequencies (mapcat neighbours cells))
+         :when (or (= n 3) (and (= n 2) (cells loc)))]
+         loc)))
+
+(->> (iterate step #{[2 0][2 1][2 2][1 2][0 1]})
+     drop 8
+     first
+     (populate (empty-board 6 6))
+     pprint)
