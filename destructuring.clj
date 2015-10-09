@@ -57,3 +57,41 @@
 ;; treats vector like a map with integers as keys
 (let [{x 3 y 8}[12 0 0 -18 44 6 0 0 1]]
   (+ x y))
+
+
+(let [{{e :e} :d} m];; :d extracts to the map which further extracts :e to bind with e
+  (* 2 e))
+
+(let [{[x _ y] :c } m];;referencing the internal vector inside the map
+  (+ x y))
+
+(def map-in-vector ["James" {:birthday (java.util.Date. 73 1 6)}])
+
+(let [[name {bd :birthday}] map-in-vector];;references vector and then references the inner map
+  (str name " was born on " bd))
+
+(let [{r1 :x r2 :y :as randoms}
+      (zipmap [:x :y :z] (repeatedly (partial rand-int 10)))]
+  (assoc randoms :sum (+ r1 r2)));; assigns :x :y :z to values which are randomly generated
+
+;;default values using the :or
+
+(let [{k :unknown x :a
+       :or {k 50}} m];; the :or value is a map with the defaults
+  (+ k x))
+
+(let [{opt1 :option} {:option false}
+      opt1 (or opt1 true)
+      {opt2 :option :or {opt2 true}}{:option false}]
+  {:opt1 opt1 :opt2 opt2})
+
+
+;;Binding values to keys names
+(def chas {:name "Chas" :age 31 :location "Massachusetts"})
+;;Verbose version
+(let [{name :name age :age location :location} chas]
+  (format "%s is %s years old and lives in %s." name age location))
+
+;;use the :keys
+(let [{:keys [name age location]} chas];; {:keys followed by vector of symbols with the same names as the keywords to map to the pre-specified symbols}
+  (format "%s is %s years old and lives in %s." name age location))
